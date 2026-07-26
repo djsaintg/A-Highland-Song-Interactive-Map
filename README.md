@@ -8,7 +8,7 @@ journal badge artwork, blessing requirements, and a built-in route planner.
 
 ## 💝 Support this Project
 
-[![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/djsaintg)
+[![Sponsor](sponsor.svg)](https://buymeacoffee.com/djsaintg)
 
 ## Features
 

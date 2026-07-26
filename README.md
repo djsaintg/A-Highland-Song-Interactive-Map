@@ -5,9 +5,10 @@ Visualises all 38 locations across 10 layers, showing travel connections with di
 journal badge artwork, blessing requirements, and a built-in route planner.
 
 ---
-## Support this Project
 
-[![Sponsor djsaintg](https://img.shields.io/badge/Sponsor-djsaintg-9ECE6A?style=for-the-badge&logo=github&logoColor=white)](https://buymeacoffee.com/djsaintg)
+## 💝 Support this Project
+
+[![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/djsaintg)
 
 ## Features
 

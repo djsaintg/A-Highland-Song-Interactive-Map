@@ -6,7 +6,20 @@ journal badge artwork, blessing requirements, and a built-in route planner.
 
 ---
 ## Support this Project
-[![Sponsor djsaintg](https://img.shields.io/badge/Sponsor-djsaintg-9ECE6A?style=for-the-badge&logo=github&logoColor=white)](https://buymeacoffee.com/djsaintg)
+<a class="sbtn-term" href="https://buymeacoffee.com/djsaintg" target="_blank" rel="noopener">
+  <span class="sbtn-term-dots"><i></i><i></i><i></i></span>
+  <span><span class="sbtn-term-p">$</span> sponsor <span class="sbtn-term-f">--to</span> djsaintg<span class="sbtn-term-c"></span></span>
+</a>
+<style>
+.sbtn-term{display:inline-flex;align-items:center;gap:14px;padding:13px 22px;background:#0d1117;border:1px solid #233041;border-radius:10px;color:#9ece6a;font:600 14px/1 'JetBrains Mono',ui-monospace,monospace;text-decoration:none;transition:.25s}
+.sbtn-term:hover{border-color:#9ece6a;box-shadow:0 8px 28px rgba(158,206,106,.15);transform:translateY(-2px)}
+.sbtn-term-dots{display:flex;gap:6px}
+.sbtn-term-dots i{width:10px;height:10px;border-radius:50%}
+.sbtn-term-dots i:nth-child(1){background:#f7768e}.sbtn-term-dots i:nth-child(2){background:#e0af68}.sbtn-term-dots i:nth-child(3){background:#9ece6a}
+.sbtn-term-p{color:#7dcfff}.sbtn-term-f{color:#bb9af7}
+.sbtn-term-c{display:inline-block;width:8px;height:15px;margin-left:3px;background:#9ece6a;vertical-align:middle;animation:sbtnblink 1s steps(1) infinite}
+@keyframes sbtnblink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
 
 ## Features
 

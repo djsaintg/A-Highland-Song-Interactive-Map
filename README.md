@@ -8,7 +8,7 @@ journal badge artwork, blessing requirements, and a built-in route planner.
 
 ## 💖 Support this Project
 
-[![Sponsor](https://raw.githubusercontent.com/djsaintg/A-Highland-Song-Interactive-Map/main/sponsor.svg)](https://buymeacoffee.com/djsaintg)
+[![Sponsor](https://raw.githubusercontent.com/djsaintg/djsaintg/main/sponsor.svg)](https://buymeacoffee.com/djsaintg)
 
 ## Features
 

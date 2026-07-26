@@ -25,7 +25,10 @@ Community suggestions are welcome — open an issue or pull request on GitHub!
 
 ## 🔧 In Progress
 
-*Nothing currently in active development.*
+Working on adding a 'notes' section to each mountain peak for manually adding;
+- which map fragment/item was found on that peak.
+- which path leads from that peak and which peak it leads to specifically
+- app will save input data for consolidation with all other public info in order to make each futre update as reliable and accurate as possible
 
 ---
 

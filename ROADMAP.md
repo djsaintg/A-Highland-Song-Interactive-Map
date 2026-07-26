@@ -5,7 +5,21 @@ Community suggestions are welcome — open an issue or pull request on GitHub!
 
 ---
 
-## ✅ Completed
+## 📌 Versioning Scheme
+
+This project follows **[Semantic Versioning](https://semver.org)** — `MAJOR.MINOR.PATCH`
+
+| Part | When it increases | Example |
+|---|---|---|
+| **MAJOR** | Large reworks or breaking changes to how the app is used | `1.0.0` → `2.0.0` |
+| **MINOR** | New features added, fully backwards compatible | `1.0.0` → `1.1.0` |
+| **PATCH** | Bug fixes, data corrections, typo fixes — no new features | `1.1.0` → `1.1.1` |
+
+**Current release: `v1.0.0`**
+
+---
+
+## ✅ v1.0.0 — Released
 
 - [x] All 38 peaks mapped across 10 layers
 - [x] Directional travel arrows (one-way and bidirectional)
@@ -23,25 +37,34 @@ Community suggestions are welcome — open an issue or pull request on GitHub!
 
 ---
 
-## 🔧 In Progress
+## 🔧 v1.1.0 — In Progress (Highest Priority)
 
-Working on adding a 'notes' section to each mountain peak for manually adding;
-- which map fragment/item was found on that peak.
-- which path leads from that peak and which peak it leads to specifically
-- app will save input data for consolidation with all other public info in order to make each futre update as reliable and accurate as possible
+> **This feature ships before any other release.**
+> A lot of this game's item and map data is not easy to find on the web, so
+> gathering it directly through the app is the most reliable way to build
+> complete, accurate data for every future update.
+
+Adding a **Notes section to each peak** for manually logging:
+- Which map fragment or item was found at that peak
+- Which specific path leads from that peak, and which peak it leads to
+
+The app will save all entered notes locally (browser storage) so the data
+persists between sessions, ready to be consolidated with other public
+sources to make each future update as reliable and accurate as possible.
 
 ---
 
-## 📋 Planned Features
+## 📋 Planned Releases
 
-### 🗒️ Maps & Items per Peak
+### 🗒️ v1.2.0 — Maps & Items per Peak
 Show which map fragments and items can be found at or near each peak.
+Built using the data gathered via the v1.1.0 Notes feature, plus public sources.
 - List all known map drops for each location
 - Mark fixed-location items (e.g. Golden Brooch at Warrior's Walk hearth, Purple Crystal in Hogshead caves)
 - Distinguish between fixed drops and random/pool drops
 - Toggle to show/hide item information on the map nodes
 
-### 🧭 Named Paths per Connection
+### 🧭 v1.3.0 — Named Paths per Connection
 Expand the connection system to show the specific in-game path name or description
 for every route between peaks — not just the two home connections currently labelled.
 This would make navigation much easier when trying to 100% the game, as players can
@@ -52,7 +75,10 @@ match what they see on screen to the exact route shown on the map.
 
 ---
 
-## 💡 Future Ideas
+## 💡 Future Ideas — Unscheduled
+
+*These are not yet assigned a version. They'll be slotted into `v1.4.0` and beyond
+as priorities are decided — or bumped to `v2.0.0` if any require a significant rework.*
 
 ### 🏆 Blessing Tracker / Checklist
 An interactive checklist overlay so players can tick off peaks they've already blessed

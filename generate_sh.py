@@ -1,14 +1,25 @@
 #!/usr/bin/env python3
-"""Generates highland_song_map.sh with App.tsx embedded as base64."""
-import base64, os
+"""Regenerates highland_song_map.sh with all current source files embedded."""
+import os
 
-app_tsx = open("src/App.tsx", "rb").read()
-app_b64 = base64.b64encode(app_tsx).decode("ascii")
+DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Single unbroken line — no newlines inside the string
-b64_block = app_b64
+def read(rel):
+    with open(os.path.join(DIR, rel)) as f:
+        return f.read().rstrip("\n")
 
-script = r"""#!/usr/bin/env bash
+# ── Read all project files ──────────────────────────────────────────────────
+pkg        = read("package.json")
+tsconfig   = read("tsconfig.json")
+indexHtml  = read("index.html")
+viteConf   = read("vite.config.ts")
+cnTs       = read("src/utils/cn.ts")
+indexCss   = read("src/index.css")
+mainTsx    = read("src/main.tsx")
+appTsx     = read("src/App.tsx")
+
+# ── Build the shell script ──────────────────────────────────────────────────
+sh = r'''#!/usr/bin/env bash
 
 # ─── A Highland Song — Peak Travel Map ───────────────────────────────────────
 # "ld.so: libextest.so cannot be preloaded" messages are a harmless system
@@ -49,117 +60,32 @@ fi
 
 echo "✅  Node $(node --version)  /  npm $(npm --version)"
 echo ""
-
-# ── Write project files ───────────────────────────────────────────────────────
 echo "📝  Writing project files..."
 
 mkdir -p src/utils
 
-cat > package.json << 'EOF'
-{
-  "name": "highland-song-map",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "clsx": "2.1.1",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "tailwind-merge": "3.4.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/vite": "4.1.17",
-    "@types/node": "22.19.17",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.1",
-    "tailwindcss": "4.1.17",
-    "typescript": "5.9.3",
-    "vite": "7.3.2",
-    "vite-plugin-singlefile": "2.3.0"
-  }
-}
-EOF
+'''
 
-cat > vite.config.ts << 'EOF'
-import path from "path";
-import { fileURLToPath } from "url";
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export default defineConfig({
-  plugins: [react(), tailwindcss(), viteSingleFile()],
-  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
-});
-EOF
+# ── Helper: write a file inside the shell script ─────────────────────────────
+def sh_cat(name, content):
+    lines = [f"cat > {name} << 'EOF'"]
+    for line in content.split("\n"):
+        lines.append(line)
+    lines.append("EOF")
+    lines.append("")
+    return "\n".join(lines)
 
-cat > tsconfig.json << 'EOF'
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true
-  },
-  "include": ["src"]
-}
-EOF
+sh += sh_cat("package.json",  pkg)
+sh += sh_cat("vite.config.ts", viteConf)
+sh += sh_cat("tsconfig.json",  tsconfig)
+sh += sh_cat("index.html",     indexHtml)
+sh += sh_cat("src/utils/cn.ts", cnTs)
+sh += sh_cat("src/index.css",  indexCss)
+sh += sh_cat("src/main.tsx",   mainTsx)
+sh += sh_cat("src/App.tsx",    appTsx)
 
-cat > index.html << 'EOF'
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>A Highland Song — Peak Map</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-EOF
-
-cat > src/utils/cn.ts << 'EOF'
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
-EOF
-
-cat > src/index.css << 'EOF'
-@import "tailwindcss";
-EOF
-
-cat > src/main.tsx << 'EOF'
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App";
-createRoot(document.getElementById("root")!).render(
-  <StrictMode><App /></StrictMode>
-);
-EOF
-
-# ── App.tsx — decoded from base64 to avoid all quoting issues ─────────────────
-echo "APP_B64_PLACEHOLDER" | base64 -d > src/App.tsx
-
-# ── Install & Build ───────────────────────────────────────────────────────────
+# ── Build & launch section ───────────────────────────────────────────────────
+sh += r'''# ── Install & Build ───────────────────────────────────────────────────────────
 echo "📦  Installing project dependencies..."
 npm install 2>/dev/null
 
@@ -183,16 +109,10 @@ FILE_URI="file://$OUTPUT"
 
 launch_chromium_app() {
   local bin=$1
-  "$bin" \
-    --app="$FILE_URI" \
-    --name="$APP_TITLE" \
-    --no-first-run \
-    --no-default-browser-check \
-    --disable-extensions \
-    --disable-translate \
-    --disable-infobars \
-    --window-size=1400,900 \
-    2>/dev/null &
+  "$bin" --app="$FILE_URI" --name="$APP_TITLE" \
+    --no-first-run --no-default-browser-check \
+    --disable-extensions --disable-translate --disable-infobars \
+    --window-size=1400,900 2>/dev/null &
 }
 
 launch_gtk_window() {
@@ -227,34 +147,20 @@ PYEOF
 
 echo "🖥️   Launching standalone GUI window..."
 
-if command -v chromium-browser &>/dev/null; then
-  launch_chromium_app "chromium-browser"
-elif command -v chromium &>/dev/null; then
-  launch_chromium_app "chromium"
-elif command -v google-chrome &>/dev/null; then
-  launch_chromium_app "google-chrome"
-elif command -v google-chrome-stable &>/dev/null; then
-  launch_chromium_app "google-chrome-stable"
-elif python3 -c "import gi; gi.require_version('WebKit2','4.0'); from gi.repository import WebKit2" 2>/dev/null; then
-  launch_gtk_window
-elif command -v firefox &>/dev/null; then
-  echo "⚠️   No Chromium found — opening in Firefox"
-  firefox "$FILE_URI" 2>/dev/null &
-elif command -v xdg-open &>/dev/null; then
-  echo "⚠️   Falling back to default browser"
-  xdg-open "$OUTPUT" 2>/dev/null &
-else
-  echo "⚠️   No browser found. Open manually:"
-  echo "    $OUTPUT"
+if command -v chromium-browser &>/dev/null; then launch_chromium_app "chromium-browser"
+elif command -v chromium &>/dev/null; then launch_chromium_app "chromium"
+elif command -v google-chrome &>/dev/null; then launch_chromium_app "google-chrome"
+elif command -v google-chrome-stable &>/dev/null; then launch_chromium_app "google-chrome-stable"
+elif python3 -c "import gi; gi.require_version('WebKit2','4.0'); from gi.repository import WebKit2" 2>/dev/null; then launch_gtk_window
+elif command -v firefox &>/dev/null; then firefox "$FILE_URI" 2>/dev/null &
+elif command -v xdg-open &>/dev/null; then xdg-open "$OUTPUT" 2>/dev/null &
+else echo "⚠️   No browser found. Open manually: $OUTPUT"
 fi
 
 echo "✅  Done!"
-"""
+'''
 
-# Replace placeholder with actual base64 block (as a single long line for base64 -d compatibility)
-script = script.replace("APP_B64_PLACEHOLDER", app_b64)
+with open(os.path.join(DIR, "highland_song_map.sh"), "w") as f:
+    f.write(sh)
 
-with open("highland_song_map.sh", "w") as f:
-    f.write(script)
-
-print(f"Written highland_song_map.sh ({len(script):,} bytes, App.tsx base64: {len(app_b64):,} chars)")
+print(f"✅  Written highland_song_map.sh")

@@ -6,10 +6,6 @@ journal badge artwork, blessing requirements, and a built-in route planner.
 
 ---
 
-## 💖 Support this Project
-
-[![Sponsor](https://raw.githubusercontent.com/djsaintg/djsaintg/main/sponsor.svg)](https://buymeacoffee.com/djsaintg)
-
 ## Features
 
 - **Layered map** of all 38 peaks/locations (Layer 0: Edge Cottage → Layer 9: The Lighthouse)

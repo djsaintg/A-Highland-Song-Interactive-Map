@@ -22,7 +22,7 @@ across different Linux distributions.
 ### 1. Make the script executable
 
 ```bash
-chmod +x highland_song_map.sh
+chmod +x launch.sh
 ```
 
 You only need to do this **once**.
@@ -30,7 +30,7 @@ You only need to do this **once**.
 ### 2. Run the script
 
 ```bash
-./highland_song_map.sh
+./launch.sh
 ```
 
 ### 3. What happens next
@@ -61,7 +61,28 @@ A standalone window opens showing the interactive peak map — **no browser tabs
 
 - On **Chromium/Chrome** systems: opens in `--app` mode (clean borderless window)
 - On **GTK/WebKit2** systems (most GNOME desktops): opens in a native GTK window
-- On **Firefox-only** systems: opens as a normal browser window (still fully functional)
+- On **Firefox-only** systems (including Flatpak Firefox): opens as a normal browser window (still fully functional)
+
+---
+
+## Using the App
+
+| To… | Do this |
+|---|---|
+| Zoom the map | Scroll the mouse wheel, pinch on a touchpad/touch screen, or use the **+ / −** buttons |
+| Move around | Drag the map. The ⌖ button shows the whole map again |
+| See a peak's summary | Hover over it — its connections light up |
+| Open a peak's details | Click it on the map, or pick it from the **Peaks** list |
+| Find which peaks take an item | Type the item into the **Peaks** search box (e.g. `feather`) |
+| Track your offering | In a peak's details, click the offering you left — it turns green and the peak gets a ✓ |
+| Write a field note | In a peak's details, pick Item / Map / Path / Cave / General, type, and press **Enter** |
+| Plan a route | **Route Planner** tab, or *Route from here* / *Route to here* on any peak |
+| Back up your journal | **Journal** tab → **Export** (or **Copy**). **Import** merges a backup back in |
+| Deselect | Press **Esc**, click empty map, or **All peaks** |
+
+Your offerings and notes save automatically in the browser/window you use. The Chromium app window,
+the GTK window and Firefox each keep their **own** separate storage — export from one and import into
+another if you switch.
 
 ---
 
@@ -73,12 +94,14 @@ A standalone window opens showing the interactive peak map — **no browser tabs
 | Peak names, Gaelic subtitles | ✅ | ✅ |
 | Blessings & travel connections | ✅ | ✅ |
 | Route planner (pathfinding) | ✅ | ✅ |
-| Hover tooltips & pin feature | ✅ | ✅ |
-| **Journal badge images** | ✅ | ❌ |
+| Peak details, offerings & field notes | ✅ | ✅ |
+| Export / import journal | ✅ | ✅ |
+| **Journal badge images** | ✅ | ❌ (plain mountain placeholder) |
+| **Handwritten & display fonts** | ✅ | ❌ (falls back to system fonts) |
 
 > **Why?** Badge images are fetched at runtime from the A Highland Song Fandom Wiki CDN
-> (`static.wikia.nocookie.net`). They are not bundled with the app.  
-> If you're offline, badge image slots will be empty — everything else works perfectly.
+> (`static.wikia.nocookie.net`), and fonts from Google Fonts. Neither is bundled with the app.  
+> If you're offline, each badge shows a simple mountain placeholder — everything else works perfectly.
 
 ---
 
@@ -87,7 +110,7 @@ A standalone window opens showing the interactive peak map — **no browser tabs
 Once Node.js and the dependencies are installed, every future run is faster:
 
 ```bash
-./highland_song_map.sh
+./launch.sh
 ```
 
 The script detects that everything is already in place and goes straight to building and launching.
@@ -101,7 +124,7 @@ No internet connection is needed after the first run (except for badge images as
 Works out of the box. `nvm` installs Node.js into `~/.nvm` (your home directory) — no `sudo` needed.
 
 ```bash
-chmod +x highland_song_map.sh && ./highland_song_map.sh
+chmod +x launch.sh && ./launch.sh
 ```
 
 ### Fedora Workstation
@@ -113,7 +136,7 @@ This is **not a problem** for this script. `nvm` installs Node.js entirely insid
 (your home directory, which is always writable), so no system changes are needed.
 
 ```bash
-chmod +x highland_song_map.sh && ./highland_song_map.sh
+chmod +x launch.sh && ./launch.sh
 ```
 
 The script works identically on Bazzite as it does on any other distro.
@@ -131,12 +154,12 @@ Works via `nvm`. If `curl` is not installed:
 
 ```bash
 sudo zypper install curl
-chmod +x highland_song_map.sh && ./highland_song_map.sh
+chmod +x launch.sh && ./launch.sh
 ```
 
 ---
 
-## Top 5 Common Issues & Fixes
+## Common Issues & Fixes
 
 ---
 
@@ -144,20 +167,20 @@ chmod +x highland_song_map.sh && ./highland_song_map.sh
 
 **Symptom:**
 ```
-bash: ./highland_song_map.sh: Permission denied
+bash: ./launch.sh: Permission denied
 ```
 
 **Cause:** The script doesn't have the execute permission set.
 
 **Fix:**
 ```bash
-chmod +x highland_song_map.sh
-./highland_song_map.sh
+chmod +x launch.sh
+./launch.sh
 ```
 
 **If that still doesn't work** (e.g. script is on a USB drive or NTFS partition):
 ```bash
-bash highland_song_map.sh
+bash launch.sh
 ```
 Running it explicitly through `bash` bypasses the execute bit requirement entirely.
 
@@ -176,7 +199,7 @@ The script installs Node.js via nvm, but then immediately says Node isn't found.
 ```bash
 export NVM_DIR="$HOME/.nvm"
 source "$NVM_DIR/nvm.sh"
-./highland_song_map.sh
+./launch.sh
 ```
 
 **Fix — Option C:** Add nvm to your shell profile permanently:
@@ -194,8 +217,8 @@ source ~/.bashrc
 Script completes successfully but either nothing opens, or it opens as a regular browser tab
 with a full address bar rather than a standalone window.
 
-**Cause:** The script tries Chromium `--app` mode first, then GTK WebKit2, then Firefox, then
-`xdg-open`. If none match your setup exactly, it may fall back unexpectedly.
+**Cause:** The script tries Chromium `--app` mode first, then a GTK WebKit2 window (WebKit2GTK 4.1 or 4.0),
+then Firefox (regular or Flatpak), then `xdg-open`. If none match your setup exactly, it may fall back unexpectedly.
 
 **Fix — find your browser binary:**
 ```bash
@@ -240,7 +263,7 @@ through writing files, leaving the project folder incomplete.
 **Fix — delete the project folder and start fresh:**
 ```bash
 rm -rf ~/highland-song-map
-./highland_song_map.sh
+./launch.sh
 ```
 
 The script will recreate everything cleanly from scratch.
@@ -262,10 +285,10 @@ If it's been more than 10 minutes:
 ```bash
 npm cache clean --force
 rm -rf ~/highland-song-map/node_modules
-./highland_song_map.sh
+./launch.sh
 ```
 
-**Fix — try a different npm registry mirror:**
+**Fix — make sure you're using the official npm registry:**
 ```bash
 cd ~/highland-song-map
 npm install --registry https://registry.npmjs.org
@@ -276,6 +299,19 @@ npm install --registry https://registry.npmjs.org
 curl -I https://registry.npmjs.org
 ```
 If this times out, the issue is your connection, not the script.
+
+---
+
+### ❌ Issue 6: The script stops at `🔨 Building...` with errors
+
+**Cause:** Usually a very old Node.js version, or a half-finished earlier run.
+
+**Fix:** The script prints the build errors above the ❌ line. Check `node --version` is **18 or newer**
+(`nvm install --lts` upgrades it), then delete the project folder and run the script again:
+```bash
+rm -rf ~/highland-song-map
+./launch.sh
+```
 
 ---
 

@@ -1,20 +1,41 @@
 # ⛰️ A Highland Song — Peak Travel Map
 
-An interactive, browser-based reference tool for the game **A Highland Song** by inkle Ltd.
-Visualises all 38 locations across 10 layers, showing travel connections with directional arrows,
-journal badge artwork, blessing requirements, and a built-in route planner.
+An interactive, browser-based companion for the game **A Highland Song** by inkle Ltd.
+It maps all 38 locations across 10 layers — every travel connection, each peak's journal badge,
+what it can be blessed with — and adds a route planner and a personal journal for tracking
+offerings and field notes across playthroughs.
+
+**Current version: `v1.2.0`** — see the [Roadmap](ROADMAP.md) for what changed and what's next.
 
 ---
 
 ## Features
 
-- **Layered map** of all 38 peaks/locations (Layer 0: Edge Cottage → Layer 9: The Lighthouse)
-- **Directional arrows** showing one-way and bidirectional travel routes between peaks
+### The map
+- **Pan & zoom** — scroll or pinch to zoom, drag to pan, double-tap to zoom in on touch screens; zoom buttons and a "show the whole map" reset in the corner
+- **Layered layout** of all 38 locations (Layer 0: Edge Cottage → Layer 9: The Lighthouse) — the 36 blessable peaks plus Edge Cottage and Hobson's Mine
+- **Journal-style peak cards** showing each peak's round in-game journal badge, its English name and its Gaelic name
+- **Directional arrows** — dashed amber for one-way, solid green for two-way; links that skip past a neighbouring peak arc over it instead of cutting through
 - **Named route labels** on key connections (e.g. *"Cross to the higher ridge"*, *"Climb down the rocks"*)
-- **Journal badge artwork** sourced from the community wiki, matching each peak's in-game badge
-- **Hover tooltip** anchored to the mouse cursor — shows blessings required and travel connections
-- **Click to pin** any peak's tooltip while scrolling or comparing
-- **Route Planner** — select any start and end peak; BFS pathfinding highlights the shortest valid route on the map, respecting all one-way restrictions
+- **Hover a peak** for a quick summary; its connections light up and everything else fades
+- **On-map markers** — a green ✓ where you've left an offering, an amber count where you've written field notes
+- **Collapsible legend**
+
+### The sidebar
+- **Peaks** — every location grouped by layer, with a search that matches English names, Gaelic names *and accepted offerings* (search "thistle" to see every peak that takes a Thistle Flower)
+- **Peak details** — badge, Gaelic name, layer, accepted offerings, special blessing notes, and every travel link (click one to jump there)
+- **Route Planner** — pick a start and end (or use *Route from here / to here* on any peak); BFS pathfinding finds the fewest hops while respecting one-way arrows, then highlights the route on the map with numbered steps
+- **Journal** — blessing progress (offerings left out of 36), field-note totals by category, everything you've recorded in one list, and Export / Copy / Import backups
+
+### Tracking
+- **Offerings** — mark which offering you left at each peak; select another to swap it, or select it again to clear it
+- **Field notes** — per-peak notes tagged as Item, Map, Path, Cave or General
+- Everything is **saved in your browser** automatically and can be exported to / imported from a JSON file (imports merge, never overwrite)
+
+### Everywhere
+- **Phone & tablet friendly** — the map and sidebar stack on narrow screens, with a "Bigger map" toggle
+- **Shareable links** — `#peak/moonspike`, `#route` and `#journal` open straight to that view
+- Press **Esc** to deselect a peak
 
 ---
 
@@ -24,15 +45,17 @@ journal badge artwork, blessing requirements, and a built-in route planner.
 A self-contained shell script handles everything — Node.js installation, building, and launching:
 
 ```bash
-chmod +x highland_song_map.sh
-./highland_song_map.sh
+chmod +x launch.sh
+./launch.sh
 ```
 
 The script will:
 1. Install Node.js via `nvm` if not already present
-2. Write all project source files
+2. Write all project source files to `~/highland-song-map`
 3. Build a single self-contained `dist/index.html`
-4. Open it in a standalone GUI window (Chromium `--app` mode, or GTK WebKit2 as fallback)
+4. Open it in a standalone GUI window (Chromium `--app` mode, or a GTK WebKit2 window as a fallback, then Firefox)
+
+See **[GETTING_STARTED.md](GETTING_STARTED.md)** for a walkthrough and fixes for common issues.
 
 ### Manual build (any platform with Node.js ≥ 18)
 ```bash
@@ -43,6 +66,35 @@ npm run build
 
 ---
 
+## Developing
+
+```bash
+npm install
+npm run dev          # live-reloading dev server
+npm run build        # type-check + single-file production build
+```
+
+After changing any source file, regenerate the Linux launcher so it embeds the new code:
+
+```bash
+python3 generate_sh.py
+```
+
+### Project layout
+
+| Path | What's in it |
+|---|---|
+| `src/data.ts` | Peaks, connections, blessings, layer names, badge crops, and the BFS route finder |
+| `src/store.ts` | Field notes and offerings: saving, loading, export/import |
+| `src/components/PeakMap.tsx` | The pan/zoom map, arrows, peak cards, hover tooltip and legend |
+| `src/components/PeakPanel.tsx` | Peak list and peak details (offerings, travel, field notes) |
+| `src/components/RoutePanel.tsx` | Route Planner tab |
+| `src/components/JournalPanel.tsx` | Journal tab: progress, backups, all notes |
+| `src/components/ui.tsx` | Shared bits, including the `Emblem` badge component |
+| `generate_sh.py` | Rebuilds `launch.sh` from the source files |
+
+---
+
 ## Tech Stack
 
 | Technology | Version | License |
@@ -50,9 +102,13 @@ npm run build
 | [React](https://react.dev) | 19.2.6 | MIT |
 | [Vite](https://vitejs.dev) | 7.3.2 | MIT |
 | [Tailwind CSS](https://tailwindcss.com) | 4.1.17 | MIT |
+| [TypeScript](https://www.typescriptlang.org) | 5.9.3 | Apache-2.0 |
 | [vite-plugin-singlefile](https://github.com/richardtallent/vite-plugin-singlefile) | 2.3.0 | MIT |
+| [Lucide icons](https://lucide.dev) | 1.x | ISC |
 | [clsx](https://github.com/lukeed/clsx) | 2.1.1 | MIT |
 | [tailwind-merge](https://github.com/dcastil/tailwind-merge) | 3.4.0 | MIT |
+
+Fonts: [Fraunces](https://fonts.google.com/specimen/Fraunces), [Caveat](https://fonts.google.com/specimen/Caveat) and [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts (SIL Open Font License).
 
 All pathfinding is implemented with a custom **Breadth-First Search (BFS)** algorithm that fully respects the directionality of travel connections.
 
@@ -69,8 +125,11 @@ All game content, characters, location names, Gaelic translations, lore, and pea
 
 ### Peak badge images
 Badge images displayed on each peak node are sourced from the
-**[A Highland Song Fandom Wiki](https://a-highland-song.fandom.com/wiki/A_Highland_Song_Wiki)**,
-retrieved via the MediaWiki public API (`api.php?action=query&prop=imageinfo`).
+**[A Highland Song Fandom Wiki](https://a-highland-song.fandom.com/wiki/A_Highland_Song_Wiki)**:
+each peak page's journal-badge screenshot, located via the MediaWiki public API
+(`api.php?action=query&prop=pageimages|imageinfo`). The app displays only the round emblem from each
+badge, and Edge Cottage and Hobson's Mine (which have no badge) use a wiki picture instead.
+Images load straight from the wiki's CDN with no referrer, since Fandom swaps hotlinked images for a placeholder.
 
 Wiki text content is licensed under
 **[CC-BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)** (Creative Commons Attribution-ShareAlike 3.0).

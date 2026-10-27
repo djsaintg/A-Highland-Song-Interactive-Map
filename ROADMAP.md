@@ -15,7 +15,7 @@ This project follows **[Semantic Versioning](https://semver.org)** — `MAJOR.MI
 | **MINOR** | New features added, fully backwards compatible | `1.0.0` → `1.1.0` |
 | **PATCH** | Bug fixes, data corrections, typo fixes — no new features | `1.1.0` → `1.1.1` |
 
-**Current release: `v1.1.0`**
+**Current release: `v1.2.0`**
 
 ---
 
@@ -58,11 +58,63 @@ This project follows **[Semantic Versioning](https://semver.org)** — `MAJOR.MI
 
 ---
 
+## ✅ v1.2.0 — Released *(unplanned polish & fixes update)*
+
+A full review and polish pass, styled after the Spiritfarer Everlight Atlas. Not on the original
+roadmap, so the releases planned after it each move up one version number.
+
+#### Fixes
+- [x] **Badge images now actually load** — Fandom's CDN swaps hotlinked images for a "No image"
+  placeholder unless no referrer is sent; the app now sends none
+- [x] **Correct badge for every peak** — Little Guard showed the Outer Wall badge, The Pillars showed
+  Fall Fell's, The Lighthouse showed the game logo, and Edge Cottage showed Hamish
+- [x] **Badges show the emblem** — the round journal emblem is cropped out of each badge strip
+  instead of a squashed slice of its handwriting
+- [x] **Hobson's Mine** is a mine, not a peak — it had been given the Lightning Stone's offerings;
+  it now explains how to quiet the ghost miners instead, and the blessing total is the correct 36
+- [x] **Offering data corrected against the wiki** — Little Finger also takes the Gold Wedding Band;
+  Queen's Throne also takes the Golden Flower and Golden Brooch; The Beak accepts any item (Lavender
+  is the "sneeze" trick); item names matched to the game (Gold Wedding Band, Metal Flute, Old Bottle
+  of Whisky) — existing saved selections are carried over automatically
+- [x] Eagle's Nest ⇄ Crofter's Echo drawn as one two-way arrow instead of two overlapping one-way arrows
+- [x] Arrows that skipped past a peak no longer cut straight through its card
+- [x] Route Planner toggle showed raw `&#x25B2;` text instead of an arrow
+- [x] Export / Copy were disabled when you had offerings but no notes
+- [x] Back-to-back status messages no longer cut each other off early
+- [x] Pinned tooltip could run off the bottom of the screen (replaced by the sidebar)
+- [x] Saved data is validated on load — unknown peaks and invalid offerings are dropped
+- [x] Linux launcher shows npm/build errors instead of hiding them, supports WebKit2GTK 4.1
+  (newer distros) as well as 4.0, can use Flatpak Firefox, and no longer misses source files
+
+#### Polish & new features
+- [x] Pan & zoom map — scroll/pinch to zoom, drag to pan, double-tap, zoom buttons, reset view
+- [x] Journal-style peak cards with the in-game emblem, handwritten English and Gaelic names
+- [x] Curved arrows; links that skip a peak arc above the row
+- [x] Sidebar with **Peaks**, **Route Planner** and **Journal** tabs, replacing the floating tooltip
+- [x] Peak search that also matches accepted offerings
+- [x] Clickable travel links, *Route from here / Route to here* buttons, swap start ⇄ end
+- [x] Route shown as a numbered step list; clicking a step flies the map there
+- [x] Journal tab — blessing progress bar, notes by category, all notes in one place
+- [x] Green ✓ on peaks where an offering has been left (like the in-game journal)
+- [x] Hover summary card and collapsible map legend
+- [x] Phone & tablet layout with a "Bigger map" toggle
+- [x] Shareable deep links (`#peak/<id>`, `#route`, `#journal`) and Esc to deselect
+- [x] App icon, Caveat + Inter fonts alongside Fraunces, highland colour palette
+
+#### Housekeeping
+- [x] Split the single 740-line `App.tsx` into data, storage and component files
+- [x] Removed dead files: a stray zip copy of the repo and an unused test image
+- [x] `npm run build` now type-checks first
+- [x] Linux launcher renamed from `highland_song_map.sh` to `launch.sh`
+- [x] GTK window no longer closes instantly on Wayland with NVIDIA GPUs (WebKitGTK DMA-BUF renderer disabled)
+
+---
+
 ## 📋 Planned Releases
 
-### 🎒 v1.2.0 — Inventory, Maps & Items per Peak
+### 🎒 v1.3.0 — Inventory, Maps & Items per Peak
 Add a persistent inventory system alongside verified map and item-location data.
-Built using the data gathered via the v1.1.0 Notes feature, plus public sources.
+Built using the data gathered via the Field Notes feature, plus public sources.
 
 #### Inventory Tracking
 - [ ] Add and remove owned items from a personal inventory
@@ -89,7 +141,7 @@ Built using the data gathered via the v1.1.0 Notes feature, plus public sources.
 - [ ] Toggle to show/hide item information on the map nodes
 - [ ] Allow a Field Note marked as **Item** or **Map** to be promoted into verified inventory/location data later
 
-### 🧭 v1.3.0 — Named Paths per Connection
+### 🧭 v1.4.0 — Named Paths per Connection
 Expand the connection system to show the specific in-game path name or description
 for every route between peaks — not just the two home connections currently labelled.
 This would make navigation much easier when trying to 100% the game, as players can
@@ -102,11 +154,11 @@ match what they see on screen to the exact route shown on the map.
 
 ## 💡 Future Ideas — Unscheduled
 
-*These are not yet assigned a version. They'll be slotted into `v1.4.0` and beyond
+*These are not yet assigned a version. They'll be slotted into `v1.5.0` and beyond
 as priorities are decided — or bumped to `v2.0.0` if any require a significant rework.*
 
 ### 🏆 Blessed Peak Completion Checklist
-Build on the existing offering-selection tracker with a separate completion checklist
+Build on the offering tracker and Journal progress bar with a separate completion checklist
 for peaks that have actually been blessed in-game across multiple playthroughs.
 
 ### 🔁 New Game Plus (NG+) Routes
@@ -127,10 +179,6 @@ Could be shown as a dashed or conditional arrow style.
 ### 🦅 Goshawk Locations
 Mark all 20 known Goshawk locations on the map, with a toggle to show/hide them.
 Useful for players chasing the goshawk-related achievements (15 needed for the final one).
-
-### 📱 Mobile / Touch Support
-The current layout is optimised for desktop. A responsive mobile layout with
-touch-friendly tooltips (tap to pin rather than hover) would make it more accessible.
 
 ### 🖨️ Print / Export View
 A clean, printer-friendly version of the map — no dark background, simplified colours —

@@ -54,7 +54,7 @@ cat > "package.json" << 'HIGHLAND_EOF'
 {
   "name": "highland-song-map",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -90,7 +90,7 @@ cat > "tsconfig.json" << 'HIGHLAND_EOF'
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": ["node", "vite/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -127,7 +127,13 @@ cat > "index.html" << 'HIGHLAND_EOF'
     <!-- Fandom's image CDN answers hotlinks from other sites with a "No image" placeholder, so send no Referer. -->
     <meta name="referrer" content="no-referrer" />
     <meta name="theme-color" content="#14262b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Highland Map" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -167,7 +173,7 @@ HIGHLAND_EOF
 
 cat > "src/App.tsx" << 'HIGHLAND_EOF'
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronsDown, ChevronsUp, Mountain, NotebookPen, Route as RouteIcon } from "lucide-react";
+import { ChevronsDown, ChevronsUp, Download, Mountain, NotebookPen, Route as RouteIcon } from "lucide-react";
 import { APP_VERSION, BLESSABLE, findPath, peakById } from "@/data";
 import { useJournal } from "@/store";
 import { cn } from "@/utils/cn";
@@ -193,6 +199,7 @@ export default function App() {
   const [routeError, setRouteError] = useState("");
   const [bigMap, setBigMap] = useState(false); // phones: map/panel split
   const sideRef = useRef<HTMLDivElement>(null);
+  const install = useInstallPrompt();
 
   const fly = (ids: string[]) => setFocus(f => ({ ids, key: f.key + 1 }));
 
@@ -247,8 +254,14 @@ export default function App() {
           <h1 className="font-display text-xl font-semibold tracking-wide text-amber-100">A Highland Song</h1>
           <span className="font-hand text-xl text-amber-200/70">Peak Travel Map</span>
         </div>
+        {install && (
+          <button onClick={install} title="Install the map as an app (works offline)"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-amber-300/40 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100 hover:bg-amber-300/20">
+            <Download size={14} /> Install
+          </button>
+        )}
         <button onClick={() => { setTab("journal"); setSelected(null); }} title="Open your journal"
-          className="ml-auto inline-flex items-center gap-3 rounded-md border border-white/10 bg-slate-950/50 px-2.5 py-1 text-xs text-slate-200 hover:bg-white/5">
+          className={cn("inline-flex items-center gap-3 rounded-md border border-white/10 bg-slate-950/50 px-2.5 py-1 text-xs text-slate-200 hover:bg-white/5", !install && "ml-auto")}>
           <span className="inline-flex items-center gap-1.5">
             <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-green-600 text-[9px] font-bold text-white">✓</span>
             {journal.offeringTotal}/{BLESSABLE.length}<span className="hidden sm:inline"> blessed</span>
@@ -296,6 +309,22 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+interface InstallEvent extends Event { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
+
+/** Chrome/Edge/Android "Add to home screen" prompt, captured so we can offer our own Install button. */
+function useInstallPrompt() {
+  const [evt, setEvt] = useState<InstallEvent | null>(null);
+  useEffect(() => {
+    const onPrompt = (e: Event) => { e.preventDefault(); setEvt(e as InstallEvent); };
+    const onInstalled = () => setEvt(null);
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => { window.removeEventListener("beforeinstallprompt", onPrompt); window.removeEventListener("appinstalled", onInstalled); };
+  }, []);
+  if (!evt) return null;
+  return () => { evt.prompt(); evt.userChoice.finally(() => setEvt(null)); };
 }
 HIGHLAND_EOF
 
@@ -599,6 +628,11 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>
 );
+
+// Offline support for the installed (home-screen) app. Skipped for file:// (the local launcher) and the dev server.
+if ("serviceWorker" in navigator && import.meta.env.PROD && location.protocol !== "file:") {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
+}
 HIGHLAND_EOF
 
 cat > "src/store.ts" << 'HIGHLAND_EOF'
@@ -1686,6 +1720,87 @@ cat > "public/icon.svg" << 'HIGHLAND_EOF'
   <path d="M350 192 L378 164 L406 192 Z" fill="#e04b3a" stroke="#0d1519" stroke-width="10" stroke-linejoin="round"/>
   <path d="M40 392 Q256 372 472 392" fill="none" stroke="#0d1519" stroke-width="12"/>
 </svg>
+HIGHLAND_EOF
+
+cat > "public/manifest.webmanifest" << 'HIGHLAND_EOF'
+{
+  "name": "A Highland Song — Peak Travel Map",
+  "short_name": "Highland Map",
+  "description": "Unofficial interactive peak map, route planner and blessing journal for A Highland Song.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1519",
+  "theme_color": "#14262b",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
+HIGHLAND_EOF
+
+cat > "public/sw.js" << 'HIGHLAND_EOF'
+// Peak Travel Map service worker: makes the installed app work offline.
+// - The app itself (one self-contained index.html) is network-first, so updates arrive as soon as you're online.
+// - Fonts and wiki badge images are cache-first after the first view, so peaks you've seen keep their badges offline.
+const VERSION = "v1.3.0";
+const SHELL = `hsmap-shell-${VERSION}`;
+const RUNTIME = "hsmap-runtime-1";
+const SHELL_FILES = ["./", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+const RUNTIME_MAX = 200;
+
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(SHELL).then(c => c.addAll(SHELL_FILES)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => (k.startsWith("hsmap-shell-") && k !== SHELL) || (k.startsWith("hsmap-runtime") && k !== RUNTIME)).map(k => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+async function trim(cache) {
+  const keys = await cache.keys();
+  for (const k of keys.slice(0, Math.max(0, keys.length - RUNTIME_MAX))) await cache.delete(k);
+}
+
+self.addEventListener("fetch", e => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+
+  // App shell: network first, fall back to the cached copy when offline.
+  if (req.mode === "navigate" || url.origin === location.origin) {
+    e.respondWith(
+      fetch(req)
+        .then(res => {
+          if (res.ok) { const copy = res.clone(); caches.open(SHELL).then(c => c.put(req.mode === "navigate" ? "./" : req, copy)); }
+          return res;
+        })
+        .catch(() => caches.match(req.mode === "navigate" ? "./" : req, { ignoreSearch: true })),
+    );
+    return;
+  }
+
+  // Fonts and wiki images: cache first, then network (opaque cross-origin responses are fine to cache).
+  if (/fonts\.(googleapis|gstatic)\.com$|(^|\.)(wikia\.nocookie\.net|fandom\.com)$/.test(url.hostname) || req.destination === "image") {
+    e.respondWith(
+      caches.open(RUNTIME).then(async cache => {
+        const hit = await cache.match(req);
+        if (hit) return hit;
+        const res = await fetch(req);
+        if (res.ok || res.type === "opaque") { cache.put(req, res.clone()); trim(cache); }
+        return res;
+      }),
+    );
+  }
+});
 HIGHLAND_EOF
 
 # ── Install & Build ───────────────────────────────────────────────────────────

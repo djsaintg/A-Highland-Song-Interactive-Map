@@ -14,6 +14,8 @@ files = ["package.json", "tsconfig.json", "index.html", "vite.config.ts"]
 for top in ("src", "public"):
     for root, _, names in sorted(os.walk(os.path.join(DIR, top))):
         for n in sorted(names):
+            if n.endswith(".png"):  # binary icons only matter for the installed web app, not the local launcher
+                continue
             files.append(os.path.relpath(os.path.join(root, n), DIR))
 dirs = sorted({os.path.dirname(f) for f in files if os.path.dirname(f)})
 

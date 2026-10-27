@@ -11,6 +11,17 @@ across different Linux distributions.
 No download or build needed: open the **[live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/)** in any browser, on a computer or a phone.
 The rest of this guide covers running it locally as a standalone Linux window.
 
+### Install it as an app
+
+| Device | How to install |
+|---|---|
+| Android (Chrome, Edge, Samsung Internet) | Tap **Install** in the header, or browser menu → *Install app* / *Add to Home screen* |
+| iPhone / iPad (Safari) | Share button → *Add to Home Screen* |
+| Desktop (Chrome, Edge) | Click **Install** in the header, or the install icon in the address bar |
+
+The installed app opens full-screen with its own icon and works offline once it has been opened online.
+Use **Bigger map / Smaller map** (between the map and the panel) to change how much of a phone screen the map takes up.
+
 ---
 
 ## Requirements
@@ -103,12 +114,14 @@ another if you switch.
 | Route planner (pathfinding) | ✅ | ✅ |
 | Peak details, offerings & field notes | ✅ | ✅ |
 | Export / import journal | ✅ | ✅ |
-| **Journal badge images** | ✅ | ❌ (plain mountain placeholder) |
-| **Handwritten & display fonts** | ✅ | ❌ (falls back to system fonts) |
+| **Journal badge images** | ✅ | ❌ (plain mountain placeholder) ¹ |
+| **Handwritten & display fonts** | ✅ | ❌ (falls back to system fonts) ¹ |
+
+¹ In the installed app (or the live demo once visited), badges and fonts you've already seen are cached and keep working offline.
 
 > **Why?** Badge images are fetched at runtime from the A Highland Song Fandom Wiki CDN
 > (`static.wikia.nocookie.net`), and fonts from Google Fonts. Neither is bundled with the app.  
-> If you're offline, each badge shows a simple mountain placeholder — everything else works perfectly.
+> If you're offline in the Linux window or the downloaded file, each badge shows a simple mountain placeholder — everything else works perfectly.
 
 ---
 
@@ -167,6 +180,16 @@ chmod +x launch.sh && ./launch.sh
 ---
 
 ## Common Issues & Fixes
+
+**Installed app (phone / desktop):**
+
+| Problem | Fix |
+|---|---|
+| No **Install** button | The app is already installed, or the browser doesn't offer it (Firefox, Safari) — use the browser menu → *Add to Home screen* instead |
+| Installed app shows an old version | Open it once while online, then close and reopen it to pick up the update |
+| Journal is empty in the installed app | The installed app has its own storage — **Export** from the browser version and **Import** in the app |
+
+**Linux launcher:**
 
 ---
 

@@ -7,7 +7,7 @@ It maps all 38 locations across 10 layers — every travel connection, each peak
 what it can be blessed with — and adds a route planner and a personal journal for tracking
 offerings and field notes across playthroughs.
 
-**Current version: `v1.2.0`** — see the [Roadmap](ROADMAP.md) for what changed and what's next.
+**Current version: `v1.3.0`** — see the [Roadmap](ROADMAP.md) for what changed and what's next.
 
 ---
 
@@ -35,6 +35,7 @@ offerings and field notes across playthroughs.
 - Everything is **saved in your browser** automatically and can be exported to / imported from a JSON file (imports merge, never overwrite)
 
 ### Everywhere
+- **Installable app** — add it to your phone, tablet or computer from the live demo; it opens full-screen with its own icon and works offline
 - **Phone & tablet friendly** — the map and sidebar stack on narrow screens, with a "Bigger map" toggle
 - **Shareable links** — `#peak/moonspike`, `#route` and `#journal` open straight to that view
 - Press **Esc** to deselect a peak
@@ -43,9 +44,18 @@ offerings and field notes across playthroughs.
 
 ## Running the App
 
-### In your browser (no install)
+### 🌐 In your browser
 Open the **[live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/)** — works on desktop, phones and tablets.
 It's rebuilt and redeployed to GitHub Pages automatically on every push to `main`.
+
+### 📱 Phone or tablet (install as an app)
+Open the [live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/) and add it to your home screen:
+- **Android (Chrome / Edge):** tap the **Install** button in the header, or ⋮ menu → *Install app*
+- **iPhone / iPad (Safari):** Share button → *Add to Home Screen*
+- **Desktop Chrome / Edge:** the **Install** button in the header, or the install icon in the address bar
+
+It opens full-screen like a native app and keeps working offline: the app itself is cached, and badge images and fonts are cached as you browse.
+Your journal is saved on the device; use **Journal → Export / Import** to move it between phone and desktop.
 
 ### Linux standalone window
 A self-contained shell script handles everything — Node.js installation, building, and launching:
@@ -117,6 +127,7 @@ python3 generate_sh.py
 Fonts: [Fraunces](https://fonts.google.com/specimen/Fraunces), [Caveat](https://fonts.google.com/specimen/Caveat) and [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts (SIL Open Font License).
 
 All pathfinding is implemented with a custom **Breadth-First Search (BFS)** algorithm that fully respects the directionality of travel connections.
+A web app manifest and a small service worker (`public/`) make the GitHub Pages build installable and usable offline.
 
 ---
 

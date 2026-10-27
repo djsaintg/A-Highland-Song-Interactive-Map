@@ -15,7 +15,7 @@ This project follows **[Semantic Versioning](https://semver.org)** — `MAJOR.MI
 | **MINOR** | New features added, fully backwards compatible | `1.0.0` → `1.1.0` |
 | **PATCH** | Bug fixes, data corrections, typo fixes — no new features | `1.1.0` → `1.1.1` |
 
-**Current release: `v1.2.0`**
+**Current release: `v1.3.0`**
 
 ---
 
@@ -111,9 +111,21 @@ roadmap, so the releases planned after it each move up one version number.
 
 ---
 
+## ✅ v1.3.0 — Released *(installable app)*
+
+Brings the live demo in line with the Spiritfarer Everlight Atlas: installable and usable offline.
+Like v1.2.0 this wasn't on the original roadmap, so the planned releases move up one version again.
+
+- [x] [Live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/) installable as an app — Android/desktop **Install** button, iOS *Add to Home Screen*
+- [x] App icons (PNG + SVG), full-screen standalone mode, home-screen title and theme colour
+- [x] Offline support via a service worker: the app is cached, and badge images and fonts are cached as you browse
+- [x] Updates arrive automatically the next time the app is opened online
+
+---
+
 ## 📋 Planned Releases
 
-### 🎒 v1.3.0 — Inventory, Maps & Items per Peak
+### 🎒 v1.4.0 — Inventory, Maps & Items per Peak
 Add a persistent inventory system alongside verified map and item-location data.
 Built using the data gathered via the Field Notes feature, plus public sources.
 
@@ -142,7 +154,7 @@ Built using the data gathered via the Field Notes feature, plus public sources.
 - [ ] Toggle to show/hide item information on the map nodes
 - [ ] Allow a Field Note marked as **Item** or **Map** to be promoted into verified inventory/location data later
 
-### 🧭 v1.4.0 — Named Paths per Connection
+### 🧭 v1.5.0 — Named Paths per Connection
 Expand the connection system to show the specific in-game path name or description
 for every route between peaks — not just the two home connections currently labelled.
 This would make navigation much easier when trying to 100% the game, as players can
@@ -155,7 +167,7 @@ match what they see on screen to the exact route shown on the map.
 
 ## 💡 Future Ideas — Unscheduled
 
-*These are not yet assigned a version. They'll be slotted into `v1.5.0` and beyond
+*These are not yet assigned a version. They'll be slotted into `v1.6.0` and beyond
 as priorities are decided — or bumped to `v2.0.0` if any require a significant rework.*
 
 ### 🏆 Blessed Peak Completion Checklist

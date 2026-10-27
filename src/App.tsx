@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronsDown, ChevronsUp, Mountain, NotebookPen, Route as RouteIcon } from "lucide-react";
+import { ChevronsDown, ChevronsUp, Download, Mountain, NotebookPen, Route as RouteIcon } from "lucide-react";
 import { APP_VERSION, BLESSABLE, findPath, peakById } from "@/data";
 import { useJournal } from "@/store";
 import { cn } from "@/utils/cn";
@@ -25,6 +25,7 @@ export default function App() {
   const [routeError, setRouteError] = useState("");
   const [bigMap, setBigMap] = useState(false); // phones: map/panel split
   const sideRef = useRef<HTMLDivElement>(null);
+  const install = useInstallPrompt();
 
   const fly = (ids: string[]) => setFocus(f => ({ ids, key: f.key + 1 }));
 
@@ -79,8 +80,14 @@ export default function App() {
           <h1 className="font-display text-xl font-semibold tracking-wide text-amber-100">A Highland Song</h1>
           <span className="font-hand text-xl text-amber-200/70">Peak Travel Map</span>
         </div>
+        {install && (
+          <button onClick={install} title="Install the map as an app (works offline)"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-amber-300/40 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100 hover:bg-amber-300/20">
+            <Download size={14} /> Install
+          </button>
+        )}
         <button onClick={() => { setTab("journal"); setSelected(null); }} title="Open your journal"
-          className="ml-auto inline-flex items-center gap-3 rounded-md border border-white/10 bg-slate-950/50 px-2.5 py-1 text-xs text-slate-200 hover:bg-white/5">
+          className={cn("inline-flex items-center gap-3 rounded-md border border-white/10 bg-slate-950/50 px-2.5 py-1 text-xs text-slate-200 hover:bg-white/5", !install && "ml-auto")}>
           <span className="inline-flex items-center gap-1.5">
             <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-green-600 text-[9px] font-bold text-white">✓</span>
             {journal.offeringTotal}/{BLESSABLE.length}<span className="hidden sm:inline"> blessed</span>
@@ -128,4 +135,20 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+interface InstallEvent extends Event { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
+
+/** Chrome/Edge/Android "Add to home screen" prompt, captured so we can offer our own Install button. */
+function useInstallPrompt() {
+  const [evt, setEvt] = useState<InstallEvent | null>(null);
+  useEffect(() => {
+    const onPrompt = (e: Event) => { e.preventDefault(); setEvt(e as InstallEvent); };
+    const onInstalled = () => setEvt(null);
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => { window.removeEventListener("beforeinstallprompt", onPrompt); window.removeEventListener("appinstalled", onInstalled); };
+  }, []);
+  if (!evt) return null;
+  return () => { evt.prompt(); evt.userChoice.finally(() => setEvt(null)); };
 }

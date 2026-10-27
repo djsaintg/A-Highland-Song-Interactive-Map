@@ -6,6 +6,13 @@ across different Linux distributions.
 
 ---
 
+## Just Want to Use It?
+
+No download or build needed: open the **[live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/)** in any browser, on a computer or a phone.
+The rest of this guide covers running it locally as a standalone Linux window.
+
+---
+
 ## Requirements
 
 | Requirement | Details |

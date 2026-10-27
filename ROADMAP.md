@@ -106,6 +106,7 @@ roadmap, so the releases planned after it each move up one version number.
 - [x] Removed dead files: a stray zip copy of the repo and an unused test image
 - [x] `npm run build` now type-checks first
 - [x] Linux launcher renamed from `highland_song_map.sh` to `launch.sh`
+- [x] [Live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/) on GitHub Pages, redeployed automatically on every push
 - [x] GTK window no longer closes instantly on Wayland with NVIDIA GPUs (WebKitGTK DMA-BUF renderer disabled)
 
 ---

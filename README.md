@@ -1,5 +1,7 @@
 # ⛰️ A Highland Song — Peak Travel Map
 
+### 🌐 [Live Demo →](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/)
+
 An interactive, browser-based companion for the game **A Highland Song** by inkle Ltd.
 It maps all 38 locations across 10 layers — every travel connection, each peak's journal badge,
 what it can be blessed with — and adds a route planner and a personal journal for tracking
@@ -41,7 +43,11 @@ offerings and field notes across playthroughs.
 
 ## Running the App
 
-### Linux (recommended)
+### In your browser (no install)
+Open the **[live demo](https://djsaintg.github.io/A-Highland-Song-Interactive-Map/)** — works on desktop, phones and tablets.
+It's rebuilt and redeployed to GitHub Pages automatically on every push to `main`.
+
+### Linux standalone window
 A self-contained shell script handles everything — Node.js installation, building, and launching:
 
 ```bash
